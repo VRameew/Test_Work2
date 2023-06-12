@@ -27,7 +27,7 @@ class Records(Base):
     uuid_file = sa.Column(sa.Text, nullable=False)
 
 # Creating SQL Base
-engine = sa.create_engine("postgresql+psycopg2://postgres:postgres@localhost/DB", echo=True, pool_pre_ping=True)
+engine = sa.create_engine("postgresql+psycopg2://postgres:postgres@DB", echo=True, pool_pre_ping=True)
 # Creating tables
 Base.metadata.create_all(engine)
 
