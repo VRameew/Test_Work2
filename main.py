@@ -82,3 +82,16 @@ def add_record(user_id: str, token: str, data: bytes):
     session.commit()
     record = get_record(uuid_file)
     return f"http://localhost:8000/record?id={record.id}&user={user_id}"
+    
+@app.get("/record")
+def get_record(id: str, user: str):
+    record = None
+    for rec in records:
+        if rec.id == id and rec.user_id == user:
+            record = rec
+            break
+    if record is None:
+        raise HTTPException(status_code=404, detail="Record not found")
+
+    return FileResponse(f"records/{record.uuid_file}.mp3")
+
