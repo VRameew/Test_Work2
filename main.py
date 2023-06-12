@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 import uuid
 import os
 
-#Data class for SQL base
+# Data class for SQL base
 Base = declarative_base()
 
 
@@ -26,9 +26,9 @@ class Records(Base):
     user_id = sa.Column(sa.Text, nullable=False)
     uuid_file = sa.Column(sa.Text, nullable=False)
 
-#Creating SQL Base
+# Creating SQL Base
 engine = sa.create_engine("postgresql+psycopg2://postgres:postgres@localhost/DB", echo=True, pool_pre_ping=True)
-#Creating tables
+# Creating tables
 Base.metadata.create_all(engine)
 
 DBSession = sessionmaker(
@@ -37,9 +37,9 @@ DBSession = sessionmaker(
 )
 session = DBSession()
 
-#Start FastAPI APP
+# Start FastAPI APP
 app = FastAPI()
-#Finding users by token
+# Finding users and records by token
 def get_user(token: str):
     users = session.query(Users).all()
     for user in users:
@@ -55,7 +55,7 @@ def get_record(token: str):
     raise HTTPException(status_code=401, detail="Invalid token")
 
 
-#First part of API
+# First part of API
 @app.post("/users")
 def user_creating(name: str):
     token = str(uuid.uuid4())
@@ -63,9 +63,9 @@ def user_creating(name: str):
     session.add(user)
     session.commit()
     return [user.id, user.token]
-    
-@app.post("/records", response_model=Record)
-def add_record(user_id: str, token: str, data: bytes):
+# Second part API. Takes  paramas user_id, token and data(file for upload)  
+@app.post("/records")
+def add_record(user_id: int, token: str, data: bytes):
     user = get_user(token)
     if user.id != user_id:
         raise HTTPException(status_code=401, detail="User ID mismatch")
@@ -81,10 +81,10 @@ def add_record(user_id: str, token: str, data: bytes):
     session.add(record)
     session.commit()
     record = get_record(uuid_file)
-    return f"http://localhost:8000/record?id={record.id}&user={user_id}"
-    
+    return FileResponse(f"http://localhost:8000/record?id={record.id}&user={user_id}")
+# Third part of API takes id of record and user id for donload link generate     
 @app.get("/record")
-def get_record(id: str, user: str):
+def get_record(id: int, user: int):
     record = None
     for rec in records:
         if rec.id == id and rec.user_id == user:
