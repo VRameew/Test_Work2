@@ -30,13 +30,11 @@ class Records(Base):
 engine = sa.create_engine("postgresql+psycopg2://postgres:postgres@DB", echo=True, pool_pre_ping=True)
 # Creating tables
 Base.metadata.create_all(engine)
-
 DBSession = sessionmaker(
     binds={Base: engine},
     expire_on_commit=False,
 )
 session = DBSession()
-
 # Start FastAPI APP
 app = FastAPI()
 # Finding users and records by token
@@ -54,7 +52,6 @@ def get_record(token: str):
             return rec
     raise HTTPException(status_code=401, detail="Invalid token")
 
-
 # First part of API
 @app.post("/users")
 def user_creating(name: str):
@@ -63,6 +60,7 @@ def user_creating(name: str):
     session.add(user)
     session.commit()
     return [user.id, user.token]
+
 # Second part API. Takes  paramas user_id, token and data(file for upload)  
 @app.post("/records")
 def add_record(user_id: int, token: str, data: bytes):
@@ -82,6 +80,7 @@ def add_record(user_id: int, token: str, data: bytes):
     session.commit()
     record = get_record(uuid_file)
     return FileResponse(f"http://localhost:8000/record?id={record.id}&user={user_id}")
+
 # Third part of API takes id of record and user id for donload link generate     
 @app.get("/record")
 def get_record(id: int, user: int):
