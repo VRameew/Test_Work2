@@ -51,5 +51,4 @@ def user_creating(name: str):
     user = Users(name=name, token=token)
     session.add(user)
     session.commit()
-    print(str(user.id), "!!!!!!!!!!!!!!!!")
-    return user.id
+    return user
