@@ -9,7 +9,7 @@ import uuid
 Base = declarative_base()
 
 
-class User(Base):
+class Users(Base):
     __tablename__ = "Users"
     
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
@@ -17,7 +17,7 @@ class User(Base):
     token = sa.Column(sa.Text, nullable=False)
 
 
-class Record(Base):
+class Records(Base):
     __tablename__ = "Records"
     
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
@@ -39,7 +39,7 @@ session = DBSession()
 app = FastAPI()
 #Finding users by token
 def get_user(token: str):
-    users = session.query(User).all()
+    users = session.query(Users).all()
     for user in users:
         if user.token == token:
             return user
@@ -48,7 +48,7 @@ def get_user(token: str):
 @app.post("/users")
 def user_creating(name: str):
     token = str(uuid.uuid4())
-    user = User(name=name, token=token)
+    user = Users(name=name, token=token)
     session.add(user)
     session.commit()
     print(str(user.id), "!!!!!!!!!!!!!!!!")
