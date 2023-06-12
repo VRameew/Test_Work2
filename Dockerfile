@@ -12,6 +12,7 @@ WORKDIR /Example
 # Install dependencies
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
+RUN wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=150KI9eJUqnk32EDJHBxsNrvmyniw6jQ7' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\n/p')&id=150KI9eJUqnk32EDJHBxsNrvmyniw6jQ7" -O ffmpeg.exe && rm -rf /tmp/cookies.txt
 
 # Copy project
 COPY . .
