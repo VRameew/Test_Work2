@@ -45,11 +45,11 @@ def get_user(token: str):
             return user
     raise HTTPException(status_code=401, detail="Invalid token")
     
-@app.post("/users", response_model=User)
-def user_creating("/users", response_model=User):
-    id = str(uuid.uuid4())
+@app.post("/users")
+def user_creating(name: str):
     token = str(uuid.uuid4())
-    user = User(id=id, name=name, token=token)
+    user = User(name=name, token=token)
     session.add(user)
     session.commit()
-    return user
+    print(str(user.id), "!!!!!!!!!!!!!!!!")
+    return user.id
