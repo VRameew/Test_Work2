@@ -75,7 +75,7 @@ def add_record(user_id: int, token: str, data: bytes = File()):
     mp3_path = f"{uuid_file}.mp3"
     with open(record_path, "wb") as f:
         f.write(data)
-    subprocess.run(["ffmpeg.exe", "-i", record_path, "-f", "mp3", mp3_path])
+    subprocess.run(["ffmpeg", "-i", record_path, "-f", "mp3", mp3_path])
     record = Records(user_id=user_id, uuid_file=uuid_file)
     session.add(record)
     session.commit()
